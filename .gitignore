@@ -1,0 +1,9 @@
+.gradle/
+.gradle-bootstrap/
+build/
+**/build/
+.idea/
+*.iml
+out/
+.env
+*.log
