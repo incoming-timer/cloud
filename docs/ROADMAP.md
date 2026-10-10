@@ -290,7 +290,7 @@ gateway에 변경을 fan-out한다. pub/sub 자체는 내구성 원장이 아니
 
 목표: 인증 전 환경에서 타이머 명령을 안전하게 직렬화한다.
 
-- TypeScript API, PostgreSQL, migration, 환경 설정을 구성한다.
+- Kotlin/Spring Boot API, PostgreSQL, Flyway migration, 환경 설정을 구성한다.
 - timers, timer_operations, change_log, outbox_events schema를 만든다.
 - OpenAPI와 오류 응답 형식을 확정한다.
 - 멱등 명령 처리와 version compare-and-swap을 구현한다.

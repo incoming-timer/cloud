@@ -1,5 +1,6 @@
 package com.incomingtimer.db
 
+import org.flywaydb.core.Flyway
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.PostgreSQLContainer
@@ -10,13 +11,30 @@ import java.sql.DriverManager
 @Testcontainers(disabledWithoutDocker = true)
 class PostgresIntegrationTest {
     @Test
-    fun `connects to PostgreSQL`() {
+    fun `migrates the synchronization schema`() {
+        val flyway =
+            Flyway
+                .configure()
+                .dataSource(postgres.jdbcUrl, postgres.username, postgres.password)
+                .load()
+
+        val migration = flyway.migrate()
+
+        assertEquals(1, migration.migrationsExecuted)
+
         DriverManager.getConnection(postgres.jdbcUrl, postgres.username, postgres.password).use { connection ->
-            connection.createStatement().use { statement ->
-                statement.executeQuery("select 1").use { result ->
-                    result.next()
-                    assertEquals(1, result.getInt(1))
-                }
+            connection.metaData.getTables(null, "public", null, arrayOf("TABLE")).use { tables ->
+                val tableNames =
+                    buildSet {
+                        while (tables.next()) {
+                            add(tables.getString("TABLE_NAME"))
+                        }
+                    }
+
+                assertEquals(
+                    setOf("flyway_schema_history", "timers", "timer_operations", "change_log", "outbox_events"),
+                    tableNames,
+                )
             }
         }
     }

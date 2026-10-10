@@ -16,6 +16,12 @@ Kotlin and Spring Boot server for durable, multi-device timer synchronization.
 
 On Windows, use `gradlew.bat` instead of `./gradlew`.
 
+## API and database contracts
+
+- [`docs/openapi.yaml`](docs/openapi.yaml) is the versioned HTTP synchronization contract.
+- Flyway migrations live in `infrastructure-db/src/main/resources/db/migration` and are applied in version order.
+- API or persistence changes must update these contracts and the relevant documentation in the same pull request.
+
 ## Modules
 
 - `app-api`: HTTPS synchronization API
